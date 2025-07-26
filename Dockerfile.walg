@@ -1,0 +1,37 @@
+FROM ubuntu:22.04
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    wget \
+    ca-certificates \
+    postgresql-client \
+    curl \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MinIO client
+RUN wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc \
+    && chmod +x /usr/local/bin/mc
+
+# Install WAL-G
+RUN wget -O /usr/local/bin/wal-g https://github.com/wal-g/wal-g/releases/download/v2.0.1/wal-g-linux-amd64 \
+    && chmod +x /usr/local/bin/wal-g
+
+# Create directories
+RUN mkdir -p /backups /scripts
+
+# Set environment variables for MinIO
+ENV WALG_S3_PREFIX=s3://walg-backups/
+ENV AWS_ACCESS_KEY_ID=minioadmin
+ENV AWS_SECRET_ACCESS_KEY=minioadmin
+ENV AWS_DEFAULT_REGION=us-east-1
+ENV AWS_ENDPOINT=http://minio:9000
+ENV AWS_S3_FORCE_PATH_STYLE=true
+
+# Copy backup scripts
+COPY scripts/backup-*.sh /scripts/
+RUN chmod +x /scripts/*.sh
+
+WORKDIR /backups
+
+CMD ["tail", "-f", "/dev/null"] 

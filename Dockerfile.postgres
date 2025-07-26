@@ -1,0 +1,32 @@
+FROM postgres:15
+
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    wget \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install WAL-G
+RUN wget -O /usr/local/bin/wal-g https://github.com/wal-g/wal-g/releases/download/v2.0.1/wal-g-linux-amd64 \
+    && chmod +x /usr/local/bin/wal-g
+
+# Create directories for backups and scripts
+RUN mkdir -p /backups /scripts
+
+# Copy initialization script
+COPY scripts/init-walg.sh /docker-entrypoint-initdb.d/
+RUN chmod +x /docker-entrypoint-initdb.d/init-walg.sh
+
+# Set environment variables for WAL-G with MinIO
+ENV WALG_S3_PREFIX=s3://walg-backups/
+ENV AWS_ACCESS_KEY_ID=minioadmin
+ENV AWS_SECRET_ACCESS_KEY=minioadmin
+ENV AWS_DEFAULT_REGION=us-east-1
+ENV AWS_ENDPOINT=http://minio:9000
+ENV AWS_S3_FORCE_PATH_STYLE=true
+
+# Create postgres user with necessary permissions
+USER postgres
+RUN mkdir -p /var/lib/postgresql/data/wal_archive
+
+USER root 
