@@ -1,4 +1,4 @@
-.PHONY: help build up down start stop restart logs backup-full backup-incremental backup-list backup-restore clean test-data
+.PHONY: help build up down start stop restart logs backup-full backup-incremental backup-list backup-restore clean test-data validate-backup
 
 # Default target
 help:
@@ -17,6 +17,7 @@ help:
 	@echo "  backup-incremental - Create an incremental backup"
 	@echo "  backup-list    - List available backups"
 	@echo "  backup-restore - Restore from latest backup"
+	@echo "  validate-backup - Test backup and restore functionality"
 	@echo "  clean          - Remove all containers, volumes, and images"
 	@echo "  test-data      - Insert test data into database"
 
@@ -95,3 +96,7 @@ walg-version:
 minio-status:
 	docker-compose exec minio mc alias set myminio http://localhost:9000 minioadmin minioadmin
 	docker-compose exec minio mc ls myminio 
+
+# Validate backup and restore functionality
+validate-backup:
+	./scripts/validate-backup.sh
