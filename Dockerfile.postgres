@@ -27,5 +27,6 @@ ENV AWS_S3_FORCE_PATH_STYLE=true
 
 # Create postgres user with necessary permissions
 USER postgres
+RUN mkdir -p /var/lib/postgresql/archive_status
 
 USER root 
