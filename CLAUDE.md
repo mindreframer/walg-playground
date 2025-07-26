@@ -77,12 +77,23 @@ Use `make db-status` to verify PostgreSQL configuration and `make backup-list` t
 
 ### Backup Validation
 
-Run `make validate-backup` to perform a comprehensive test that:
-1. Creates test data in PostgreSQL
-2. Performs a full backup
-3. Adds additional data (post-backup)
-4. Simulates data loss by dropping tables
-5. Restores from backup to verify data integrity
-6. Confirms only pre-backup data is recovered
+Run `make validate-backup` to perform a comprehensive test of the complete backup chain:
 
-This validation ensures the backup and restore process works correctly and data can be recovered after loss scenarios.
+**Full Backup + Incremental Backup Test:**
+1. Creates initial test data (user1, user2, user3)
+2. Performs a full backup
+3. Adds additional data for incremental backup (user4, user5)
+4. Creates an incremental backup based on the full backup
+5. Adds post-incremental data (user6, user7)
+6. Simulates data loss by dropping tables
+7. Validates both full and incremental backups can be restored
+8. Confirms backup chain integrity and proper incremental relationship
+
+**Validation Confirms:**
+- Full backup captures initial state correctly
+- Incremental backup captures changes after full backup
+- Backup chain can be restored successfully
+- Post-incremental changes are correctly excluded
+- WAL-G backup/restore operations work end-to-end
+
+This validation ensures the complete backup workflow (full → incremental → restore) works correctly and can recover from real data loss scenarios.
