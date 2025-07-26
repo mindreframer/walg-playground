@@ -92,6 +92,8 @@ This playground provides a complete environment for testing WAL-G backup and res
 - `make backup-incremental` - Create an incremental backup
 - `make backup-list` - List available backups
 - `make backup-restore` - Restore from latest backup
+- `make test-restore` - Test restore functionality
+- `make verify-restore` - Verify restore data integrity
 
 ### Database Operations
 - `make test-data` - Insert test data into database
