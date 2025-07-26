@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install WAL-G
-RUN wget -O /usr/local/bin/wal-g https://github.com/wal-g/wal-g/releases/download/v2.0.1/wal-g-linux-amd64 \
+RUN wget -O /usr/local/bin/wal-g https://github.com/wal-g/wal-g/releases/download/v3.0.7/wal-g-pg-ubuntu-22.04-aarch64 \
     && chmod +x /usr/local/bin/wal-g
 
 # Create directories for backups and scripts
@@ -27,6 +27,5 @@ ENV AWS_S3_FORCE_PATH_STYLE=true
 
 # Create postgres user with necessary permissions
 USER postgres
-RUN mkdir -p /var/lib/postgresql/data/wal_archive
 
 USER root 

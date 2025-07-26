@@ -17,11 +17,4 @@ CREATE TABLE IF NOT EXISTS backup_test (
 INSERT INTO backup_test (description, value) VALUES 
     ('First test entry', 100),
     ('Second test entry', 200),
-    ('Third test entry', 300);
-
--- Show current data
-SELECT 'test_data table:' as info;
-SELECT * FROM test_data ORDER BY id DESC LIMIT 5;
-
-SELECT 'backup_test table:' as info;
-SELECT * FROM backup_test ORDER BY id DESC LIMIT 5; 
+    ('Third test entry', 300); 

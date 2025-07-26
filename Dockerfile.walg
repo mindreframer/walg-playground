@@ -13,9 +13,12 @@ RUN apt-get update && apt-get install -y \
 RUN wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc \
     && chmod +x /usr/local/bin/mc
 
-# Install WAL-G
-RUN wget -O /usr/local/bin/wal-g https://github.com/wal-g/wal-g/releases/download/v2.0.1/wal-g-linux-amd64 \
-    && chmod +x /usr/local/bin/wal-g
+# Install WAL-G using alternative method
+RUN wget -O /tmp/wal-g.tar.gz https://github.com/wal-g/wal-g/releases/download/v3.0.7/wal-g-pg-ubuntu-22.04-aarch64.tar.gz \
+    && tar -xzf /tmp/wal-g.tar.gz -C /tmp \
+    && mv /tmp/wal-g-pg-ubuntu-22.04-aarch64 /usr/local/bin/wal-g \
+    && chmod +x /usr/local/bin/wal-g \
+    && rm /tmp/wal-g.tar.gz
 
 # Create directories
 RUN mkdir -p /backups /scripts
@@ -30,6 +33,7 @@ ENV AWS_S3_FORCE_PATH_STYLE=true
 
 # Copy backup scripts
 COPY scripts/backup-*.sh /scripts/
+COPY scripts/init-minio.sh /scripts/
 RUN chmod +x /scripts/*.sh
 
 WORKDIR /backups

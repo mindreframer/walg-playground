@@ -23,12 +23,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.postgres
+      platforms:
+        - linux/arm64
     container_name: walg-postgres
     environment:
       POSTGRES_DB: testdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_INITDB_ARGS: "--wal-level=replica"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: testdb
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts:/scripts
@@ -50,6 +54,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.walg
+      platforms:
+        - linux/arm64
     container_name: walg-client
     environment:
       WALG_S3_PREFIX: s3://walg-backups/

@@ -50,19 +50,19 @@ logs:
 
 # Create full backup
 backup-full:
-	docker-compose --profile backup run --rm walg /scripts/backup-full.sh
+	docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-push /var/lib/postgresql/data
 
 # Create incremental backup
 backup-incremental:
-	docker-compose --profile backup run --rm walg /scripts/backup-incremental.sh
+	docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-push /var/lib/postgresql/data --delta-from-name $$(docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-list | tail -n 1 | awk '{print $$1}')
 
 # List available backups
 backup-list:
-	docker-compose --profile backup run --rm walg /scripts/backup-list.sh
+	docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-list
 
 # Restore from latest backup
 backup-restore:
-	docker-compose --profile backup run --rm walg /scripts/backup-restore.sh
+	docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-fetch /backups/restored_data $$(docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-list | tail -n 1 | awk '{print $$1}')
 
 # Clean everything
 clean:
