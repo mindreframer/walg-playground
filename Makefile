@@ -17,11 +17,6 @@ help:
 	@echo "  backup-incremental - Create an incremental backup"
 	@echo "  backup-list    - List available backups"
 	@echo "  backup-restore - Restore from latest backup"
-	@echo "  test-restore   - Test restore functionality"
-	@echo "  verify-restore - Verify restore data integrity"
-	@echo "  restore-to-live - Restore backup to live PostgreSQL"
-	@echo "  restore-test-live - Manual restore test with live PostgreSQL"
-	@echo "  restore-test-complete - Complete restore test with detailed output"
 	@echo "  clean          - Remove all containers, volumes, and images"
 	@echo "  test-data      - Insert test data into database"
 
@@ -68,26 +63,6 @@ backup-list:
 # Restore from latest backup
 backup-restore:
 	docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-fetch /backups/restored_data $$(docker-compose exec -e PGUSER=postgres -e PGPASSWORD=postgres -e PGDATABASE=testdb postgres wal-g backup-list | tail -n 1 | awk '{print $$1}')
-
-# Test restore functionality
-test-restore:
-	./scripts/test-restore.sh
-
-# Verify restore data integrity
-verify-restore:
-	./scripts/verify-restore.sh
-
-# Restore backup to live PostgreSQL instance
-restore-to-live:
-	./scripts/restore-to-live.sh
-
-# Manual restore test with live PostgreSQL
-restore-test-live:
-	./scripts/manual-restore-test.sh
-
-# Complete restore test with detailed output
-restore-test-complete:
-	./scripts/test-restore-complete.sh
 
 # Clean everything
 clean:
